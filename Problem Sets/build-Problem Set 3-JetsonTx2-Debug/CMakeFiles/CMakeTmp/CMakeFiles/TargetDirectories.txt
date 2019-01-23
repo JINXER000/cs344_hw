@@ -1,3 +1,0 @@
-/home/nvidia/yzchen_ws/cs344/Problem Sets/build-Problem Set 3-JetsonTx2-Debug/CMakeFiles/CMakeTmp/CMakeFiles/edit_cache.dir
-/home/nvidia/yzchen_ws/cs344/Problem Sets/build-Problem Set 3-JetsonTx2-Debug/CMakeFiles/CMakeTmp/CMakeFiles/rebuild_cache.dir
-/home/nvidia/yzchen_ws/cs344/Problem Sets/build-Problem Set 3-JetsonTx2-Debug/CMakeFiles/CMakeTmp/CMakeFiles/cmTC_7a954.dir
