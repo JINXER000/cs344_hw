@@ -6,12 +6,39 @@
 ############################################################################
 # minimum required cmake version
 cmake_minimum_required(VERSION 2.8)
-find_package(CUDA QUIET REQUIRED)
+project(cs344_hw)
+SET(CMAKE_C_COMPILER gcc)
+SET(CMAKE_CXX_COMPILER g++)
+if(CMAKE_COMPILER_IS_GNUCXX)
+  add_compile_options(-std=c++11)
+message(STATUS "optional:-std=c++11")
+endif(CMAKE_COMPILER_IS_GNUCXX)
 
-SET (compare_files compare.cpp)
+FIND_PACKAGE(CUDA REQUIRED)
+SET(CUDA_NVCC_FLAGS "-arch=sm_60" CACHE STRING "nvcc flags" FORCE)
+SET (CUDA_VERBOSE_BUILD ON CACHE BOOL "nvcc verbose" FORCE)
 
-file( GLOB  hdr *.hpp *.h )
-file( GLOB  cu  *.cu)
-SET (HW3_files main.cpp loadSaveImage.cpp reference_calc.cpp compare.cpp)
+find_package(OpenCV REQUIRED)
+if(CMAKE_VERSION VERSION_LESS "2.8.11")
+  include_directories(${OpenCV_INCLUDE_DIRS})
+endif()
+include_directories(
+        ${PROJECT_SOURCE_DIR}/include
+
+)
+
+SET(CMAKE_BUILD_TYPE Debug)
+
+file( GLOB  hdr ./include/*.h* )
+file( GLOB  cu  ./src/*.cu)
+file( GLOB  srcpp  ./src/*.cpp)
+
     
-CUDA_ADD_EXECUTABLE(HW3 ${HW3_files} ${hdr} ${cu})
+CUDA_ADD_EXECUTABLE(HW3 ${srcpp} ${hdr}
+    ${cu} )
+    #./src/HW3.cu ./src/student_func.cu)
+target_link_libraries(
+    HW3
+    ${OpenCV_LIBS}
+    -lpthread
+    )

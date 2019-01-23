@@ -1,19 +1,29 @@
 #include <opencv2/opencv.hpp>
-#include "utils.h"
+#include <opencv2/core/ocl.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
+#include <vector>
+#include <stdio.h>
+#include <iostream>
+#include "compare.h"
+#include "../include/utils.h"
+
+using namespace cv ;
 void compareImages(std::string reference_filename, std::string test_filename, bool useEpsCheck,
 				   double perPixelError, double globalError)
 {
-  cv::Mat reference = cv::imread(reference_filename, -1);
-  cv::Mat test = cv::imread(test_filename, -1);
+  Mat reference = imread(reference_filename);
+  Mat test = imread(test_filename, -1);
 
-  cv::Mat diff = abs(reference - test);
+  Mat diff = abs(reference - test);
 
-  cv::Mat diffSingleChannel = diff.reshape(1, 0); //convert to 1 channel, same # rows
+  Mat diffSingleChannel = diff.reshape(1, 0); //convert to 1 channel, same # rows
 
   double minVal, maxVal;
 
-  cv::minMaxLoc(diffSingleChannel, &minVal, &maxVal, NULL, NULL); //NULL because we don't care about location
+  minMaxLoc(diffSingleChannel, &minVal, &maxVal, NULL, NULL); //NULL because we don't care about location
 
   //now perform transform so that we bump values to the full range
 
@@ -21,7 +31,7 @@ void compareImages(std::string reference_filename, std::string test_filename, bo
 
   diff = diffSingleChannel.reshape(reference.channels(), 0);
 
-  cv::imwrite("HW3_differenceImage.png", diff);
+  imwrite("HW3_differenceImage.png", diff);
   //OK, now we can start comparing values...
   unsigned char *referencePtr = reference.ptr<unsigned char>(0);
   unsigned char *testPtr = test.ptr<unsigned char>(0);
