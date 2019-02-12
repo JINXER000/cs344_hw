@@ -8,6 +8,8 @@
 #include <cuda_runtime_api.h>
 #include <cassert>
 #include <cmath>
+#include <device_functions.h>
+#include "device_launch_parameters.h"
 
 #define checkCudaErrors(val) check( (val), #val, __FILE__, __LINE__)
 

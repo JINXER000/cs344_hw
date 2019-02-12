@@ -15,7 +15,7 @@ message(STATUS "optional:-std=c++11")
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 FIND_PACKAGE(CUDA REQUIRED)
-SET(CUDA_NVCC_FLAGS "-arch=sm_60" CACHE STRING "nvcc flags" FORCE)
+SET(CUDA_NVCC_FLAGS "-arch=sm_30;-g;-G" CACHE STRING "nvcc flags" FORCE)
 SET (CUDA_VERBOSE_BUILD ON CACHE BOOL "nvcc verbose" FORCE)
 
 find_package(OpenCV REQUIRED)
@@ -29,7 +29,7 @@ include_directories(
 
 SET(CMAKE_BUILD_TYPE Debug)
 
-file( GLOB  hdr ./include/*.h* )
+file( GLOB  hdr ./include/*.h )
 file( GLOB  cu  ./src/*.cu)
 file( GLOB  srcpp  ./src/*.cpp)
 

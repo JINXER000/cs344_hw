@@ -43,36 +43,40 @@ int main(int argc, char **argv) {
   double perPixelError = 0.0;
   double globalError   = 0.0;
   bool useEpsCheck = false;
+  input_file = "../memorial_raw.png";
+  output_file = "HW3_output.png";
+  reference_file = "HW3_reference.png";
 
-  switch (argc)
-  {
-	case 2:
-	  input_file = std::string(argv[1]);
-	  output_file = "HW3_output.png";
-	  reference_file = "HW3_reference.png";
-	  break;
-	case 3:
-	  input_file  = std::string(argv[1]);
-      output_file = std::string(argv[2]);
-	  reference_file = "HW3_reference.png";
-	  break;
-	case 4:
-	  input_file  = std::string(argv[1]);
-      output_file = std::string(argv[2]);
-	  reference_file = std::string(argv[3]);
-	  break;
-	case 6:
-	  useEpsCheck=true;
-	  input_file  = std::string(argv[1]);
-	  output_file = std::string(argv[2]);
-	  reference_file = std::string(argv[3]);
-	  perPixelError = atof(argv[4]);
-      globalError   = atof(argv[5]);
-	  break;
-	default:
-      std::cerr << "Usage: ./HW3 input_file [output_filename] [reference_filename] [perPixelError] [globalError]" << std::endl;
-      exit(1);
-  }
+
+//  switch (argc)
+//  {
+//	case 2:
+//	  input_file = std::string(argv[1]);
+//	  output_file = "HW3_output.png";
+//	  reference_file = "HW3_reference.png";
+//	  break;
+//	case 3:
+//	  input_file  = std::string(argv[1]);
+//      output_file = std::string(argv[2]);
+//	  reference_file = "HW3_reference.png";
+//	  break;
+//	case 4:
+//	  input_file  = std::string(argv[1]);
+//      output_file = std::string(argv[2]);
+//	  reference_file = std::string(argv[3]);
+//	  break;
+//	case 6:
+//	  useEpsCheck=true;
+//	  input_file  = std::string(argv[1]);
+//	  output_file = std::string(argv[2]);
+//	  reference_file = std::string(argv[3]);
+//	  perPixelError = atof(argv[4]);
+//      globalError   = atof(argv[5]);
+//	  break;
+//	default:
+//      std::cerr << "Usage: ./HW3 input_file [output_filename] [reference_filename] [perPixelError] [globalError]" << std::endl;
+//      exit(1);
+//  }
   //load the image and give us our input and output pointers
   preProcess(&d_luminance, &d_cdf,
              &numRows, &numCols, &numBins, input_file);
@@ -86,7 +90,8 @@ int main(int argc, char **argv) {
   your_histogram_and_prefixsum(d_luminance, d_cdf, min_logLum, max_logLum,
                                numRows, numCols, numBins);
   timer.Stop();
-  cudaDeviceSynchronize(); checkCudaErrors(cudaGetLastError());
+  //cudaDeviceSynchronize();
+  checkCudaErrors(cudaGetLastError());
   int err = printf("Your code ran in: %f msecs.\n", timer.Elapsed());
 
   if (err < 0) {
