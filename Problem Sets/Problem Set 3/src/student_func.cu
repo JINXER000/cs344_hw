@@ -102,11 +102,11 @@
 //}
 
 __global__ void getMaxMin_share(const float *const d_logLuminance,
-                                float *LogOut, const size_t numRows,
-                                const size_t numCols, bool isMax) {
+                                float *LogOut,size_t curr_size, bool isMax) {
   int Idx = blockIdx.x * blockDim.x + threadIdx.x;
   int tx = threadIdx.x;
-
+  if (Idx>curr_size)
+      return;
   extern __shared__ float sdata[];
   sdata[tx] = d_logLuminance[Idx];
   __syncthreads();
@@ -207,7 +207,8 @@ void your_histogram_and_prefixsum(const float *const d_logLuminance,
     4) Perform an exclusive scan (prefix sum) on the histogram to get
        the cumulative distribution of luminance values (this should go in the
        incoming d_cdf pointer which already has been allocated for you)       */
-  bool useShare = false;
+  bool useShare = true;
+  size_t curr_size=numRows*numCols;
   int blockSize(256);
   int gridSzize((blockSize + numCols * numRows - 1) / blockSize);
 
@@ -222,16 +223,16 @@ void your_histogram_and_prefixsum(const float *const d_logLuminance,
 
 //  if (useShare) {
     getMaxMin_share<<<gridSzize, blockSize, blockSize * sizeof(float)>>>(
-        d_logLuminance, d_intermediate, numRows, numCols, true);
+        d_logLuminance, d_intermediate, curr_size, true);
 
     getMaxMin_share<<<1, gridSzize, gridSzize * sizeof(float)>>>(
-        d_max, d_intermediate, numRows, numCols, true);
+        d_max, d_intermediate, curr_size/blockSize+1, true);
 
     getMaxMin_share<<<gridSzize, blockSize, blockSize * sizeof(float)>>>(
-        d_logLuminance, d_intermediate, numRows, numCols, false);
+        d_logLuminance, d_intermediate, curr_size, false);
 
     getMaxMin_share<<<1, gridSzize, gridSzize * sizeof(float)>>>(
-        d_min, d_intermediate, numRows, numCols, false);
+        d_min, d_intermediate, curr_size/blockSize+1, false);
 //  } else {
 //    getMaxMin<<<gridSzize, blockSize>>>(d_logLuminance, d_intermediate, numRows,
 //                                        numCols, true);
